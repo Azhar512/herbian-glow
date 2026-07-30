@@ -1,11 +1,26 @@
-import { createFileRoute, Outlet, Link } from "@tanstack/react-router";
+import { createFileRoute, Outlet, Link, redirect, useRouter } from "@tanstack/react-router";
 import { LayoutDashboard, Package, ShoppingCart, LogOut, Store } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/admin")({
+  beforeLoad: async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      throw redirect({ to: "/login" });
+    }
+  },
   component: AdminLayout,
 });
 
 function AdminLayout() {
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    router.invalidate();
+    router.navigate({ to: "/login" });
+  };
+
   return (
     <div className="flex min-h-screen bg-secondary/30">
       {/* Sidebar */}
@@ -45,7 +60,7 @@ function AdminLayout() {
           >
             <Store className="h-4 w-4" /> Back to Store
           </Link>
-          <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-red-600 transition-colors hover:bg-red-50">
+          <button onClick={handleSignOut} className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-red-600 transition-colors hover:bg-red-50">
             <LogOut className="h-4 w-4" /> Sign Out
           </button>
         </div>
