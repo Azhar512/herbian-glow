@@ -1,0 +1,110 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-cream: var(--cream);
+  --color-blush: var(--blush);
+  --color-blush-dark: var(--blush-dark);
+  --color-sage: var(--sage);
+  --color-cocoa: var(--cocoa);
+  --font-serif: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
+}
+
+:root {
+  --radius: 1rem;
+
+  /* Brand palette */
+  --cream: oklch(0.972 0.018 82);          /* #FBF6F0 */
+  --blush: oklch(0.72 0.09 25);            /* dusty rose */
+  --blush-dark: oklch(0.62 0.11 25);
+  --sage: oklch(0.72 0.05 145);            /* sage green */
+  --cocoa: oklch(0.28 0.03 40);            /* deep charcoal brown */
+
+  --background: var(--cream);
+  --foreground: var(--cocoa);
+  --card: oklch(0.99 0.008 82);
+  --card-foreground: var(--cocoa);
+  --popover: oklch(0.99 0.008 82);
+  --popover-foreground: var(--cocoa);
+  --primary: var(--blush);
+  --primary-foreground: oklch(0.98 0.01 82);
+  --secondary: oklch(0.94 0.02 60);
+  --secondary-foreground: var(--cocoa);
+  --muted: oklch(0.94 0.015 60);
+  --muted-foreground: oklch(0.5 0.03 40);
+  --accent: var(--sage);
+  --accent-foreground: oklch(0.98 0.01 82);
+  --destructive: oklch(0.6 0.22 27);
+  --destructive-foreground: oklch(0.98 0.01 82);
+  --border: oklch(0.9 0.015 60);
+  --input: oklch(0.9 0.015 60);
+  --ring: var(--blush);
+}
+
+@layer base {
+  * { border-color: var(--color-border); }
+  html { scroll-behavior: smooth; }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv01";
+  }
+  h1, h2, h3, h4, h5 {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+}
+
+@utility btn-pill {
+  border-radius: 9999px;
+  padding: 0.75rem 1.75rem;
+  font-weight: 500;
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+@utility marquee-track {
+  display: flex;
+  gap: 3rem;
+  animation: marquee 30s linear infinite;
+  white-space: nowrap;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
