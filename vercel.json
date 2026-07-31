@@ -2,23 +2,23 @@
   "rewrites": [
     {
       "source": "/assets/(.*)",
-      "destination": "/dist/client/assets/$1"
+      "destination": "/client/assets/$1"
     },
     {
       "source": "/images/(.*)",
-      "destination": "/dist/client/images/$1"
+      "destination": "/client/images/$1"
     },
     {
       "source": "/favicon.svg",
-      "destination": "/dist/client/favicon.svg"
+      "destination": "/client/favicon.svg"
     },
     {
       "source": "/logo.webp",
-      "destination": "/dist/client/logo.webp"
+      "destination": "/client/logo.webp"
     },
     {
       "source": "/robots.txt",
-      "destination": "/dist/client/robots.txt"
+      "destination": "/client/robots.txt"
     },
     {
       "source": "/(.*)",
