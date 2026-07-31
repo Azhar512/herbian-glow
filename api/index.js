@@ -1,7 +1,5 @@
 import handler from '../dist/server/server.js';
 
-export default handler.fetch;
-
-export const config = {
-  runtime: 'edge'
-};
+export default async function(request, context) {
+  return await handler.fetch(request, process.env, context);
+}
