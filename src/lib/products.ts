@@ -23,6 +23,7 @@ export type Product = {
   is_new?: boolean;
   is_best_seller?: boolean;
   in_stock: boolean;
+  stock?: number;
   short_description: string;
   description: string;
   ingredients: string[];

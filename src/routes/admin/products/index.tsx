@@ -41,6 +41,7 @@ function AdminProducts() {
               <th className="px-6 py-4 font-medium">Product</th>
               <th className="px-6 py-4 font-medium">Category</th>
               <th className="px-6 py-4 font-medium">Price</th>
+              <th className="px-6 py-4 font-medium">Stock</th>
               <th className="px-6 py-4 font-medium">Status</th>
               <th className="px-6 py-4 font-medium text-right">Actions</th>
             </tr>
@@ -56,6 +57,16 @@ function AdminProducts() {
                 </td>
                 <td className="px-6 py-4 capitalize text-muted-foreground">{p.category.replace("-", " ")}</td>
                 <td className="px-6 py-4 text-cocoa">{formatPrice(p.price)}</td>
+                <td className="px-6 py-4">
+                  {p.stock !== undefined && p.stock < 15 ? (
+                    <span className="inline-flex items-center gap-1.5 font-medium text-red-600 bg-red-50 px-2 py-1 rounded-full text-xs">
+                      <span className="h-2 w-2 rounded-full bg-red-600 animate-pulse"></span>
+                      {p.stock} left
+                    </span>
+                  ) : (
+                    <span className="text-cocoa font-medium">{p.stock ?? "N/A"}</span>
+                  )}
+                </td>
                 <td className="px-6 py-4">
                   <span
                     className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${

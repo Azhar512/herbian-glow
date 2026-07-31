@@ -11,6 +11,7 @@ export const Route = createFileRoute("/admin/orders")({
 function AdminOrdersPage() {
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchOrders();
@@ -23,8 +24,15 @@ function AdminOrdersPage() {
   };
 
   const updateStatus = async (id: string, status: string) => {
-    await supabase.from("orders").update({ status }).eq("id", id);
-    fetchOrders();
+    setUpdatingId(id);
+    const { error } = await supabase.from("orders").update({ status }).eq("id", id);
+    if (!error) {
+      await fetchOrders();
+      alert("Order status updated successfully!");
+    } else {
+      alert("Failed to update status. Check permissions.");
+    }
+    setUpdatingId(null);
   };
 
   if (loading) {
@@ -95,7 +103,8 @@ function AdminOrdersPage() {
                     <select
                       value={order.status}
                       onChange={(e) => updateStatus(order.id, e.target.value)}
-                      className="rounded-lg border border-border bg-background px-3 py-1.5 text-xs outline-none"
+                      disabled={updatingId === order.id}
+                      className="rounded-lg border border-border bg-background px-3 py-1.5 text-xs outline-none disabled:opacity-50"
                     >
                       <option value="PENDING">Pending</option>
                       <option value="SHIPPED">Shipped</option>

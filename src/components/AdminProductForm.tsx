@@ -23,6 +23,7 @@ export function AdminProductForm({
       description: "",
       status: "draft",
       in_stock: true,
+      stock: 50,
       rating: 0,
       reviews: 0,
       ingredients: [],
@@ -112,6 +113,16 @@ export function AdminProductForm({
             <option value="bundles">Bundles</option>
             <option value="accessories">Accessories</option>
           </select>
+        </div>
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-cocoa">Stock Quantity</label>
+          <input
+            type="number"
+            name="stock"
+            value={formData.stock ?? 50}
+            onChange={handleChange}
+            className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:border-blush focus:outline-none"
+          />
         </div>
         <div className="space-y-2">
           <label className="text-sm font-medium text-cocoa">Image URL</label>
