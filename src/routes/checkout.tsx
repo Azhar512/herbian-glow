@@ -3,7 +3,8 @@ import { useState } from "react";
 import { Layout } from "@/components/Layout";
 import { useCart, formatPrice } from "@/lib/cart";
 import { supabase } from "@/lib/supabase";
-import { CheckCircle2, UploadCloud, Loader2 } from "lucide-react";
+import { CheckCircle2, UploadCloud, Loader2, Tag } from "lucide-react";
+import { getDiscountCodeByCode, DiscountCode } from "@/lib/discounts";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({ meta: [{ title: "Checkout — Herbian Glow" }] }),
@@ -19,6 +20,12 @@ function CheckoutPage() {
   const [success, setSuccess] = useState(false);
   const [file, setFile] = useState<File | null>(null);
 
+  // Promo Code State
+  const [promoCodeInput, setPromoCodeInput] = useState("");
+  const [promoError, setPromoError] = useState("");
+  const [isApplyingPromo, setIsApplyingPromo] = useState(false);
+  const [appliedPromo, setAppliedPromo] = useState<DiscountCode | null>(null);
+
   // Form State
   const [formData, setFormData] = useState({
     name: "",
@@ -29,14 +36,56 @@ function CheckoutPage() {
   });
 
   const shipping = subtotal > 3000 || items.length === 0 ? 0 : 250;
-  const rawTotal = subtotal + shipping;
-  const discountAmount = method === "ONLINE" ? Math.floor(rawTotal * 0.1) : 0;
-  const finalTotal = rawTotal - discountAmount;
+  
+  // Calculate Influencer Promo Discount
+  let promoDiscountAmount = 0;
+  if (appliedPromo) {
+    if (appliedPromo.product_id) {
+      // Applies to specific product only
+      const targetItem = items.find((i) => i.product.id === appliedPromo.product_id);
+      if (targetItem) {
+        promoDiscountAmount = Math.floor((targetItem.product.price * targetItem.quantity) * (appliedPromo.discount_percentage / 100));
+      }
+    } else {
+      // Applies to entire cart subtotal
+      promoDiscountAmount = Math.floor(subtotal * (appliedPromo.discount_percentage / 100));
+    }
+  }
+
+  const rawTotal = subtotal + shipping - promoDiscountAmount;
+  const onlineDiscountAmount = method === "ONLINE" ? Math.floor(rawTotal * 0.1) : 0;
+  const finalTotal = rawTotal - onlineDiscountAmount;
+  const totalDiscount = promoDiscountAmount + onlineDiscountAmount;
 
   if (items.length === 0 && !success) {
     navigate({ to: "/cart" });
     return null;
   }
+
+  const handleApplyPromo = async () => {
+    if (!promoCodeInput.trim()) return;
+    setIsApplyingPromo(true);
+    setPromoError("");
+    
+    try {
+      const discount = await getDiscountCodeByCode(promoCodeInput.trim());
+      
+      if (!discount) {
+        setPromoError("Invalid discount code.");
+      } else if (!discount.is_active) {
+        setPromoError("This code has expired or is disabled.");
+      } else if (discount.product_id && !items.find(i => i.product.id === discount.product_id)) {
+        setPromoError("This code does not apply to any items in your cart.");
+      } else {
+        setAppliedPromo(discount);
+        setPromoCodeInput("");
+      }
+    } catch (err) {
+      setPromoError("Failed to verify code.");
+    } finally {
+      setIsApplyingPromo(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,7 +123,7 @@ function CheckoutPage() {
         customer_city: formData.city,
         payment_method: method,
         total_amount: finalTotal,
-        discount_amount: discountAmount,
+        discount_amount: totalDiscount,
         items: items,
         screenshot_url: screenshotUrl
       });
@@ -230,15 +279,62 @@ function CheckoutPage() {
                   </li>
                 ))}
               </ul>
+
+              {/* Promo Code Section */}
+              <div className="mb-6 rounded-2xl bg-background p-4 border border-border">
+                {appliedPromo ? (
+                  <div className="flex items-center justify-between rounded-xl bg-sage/10 p-3">
+                    <div className="flex items-center gap-2 text-sage">
+                      <Tag className="h-4 w-4" />
+                      <span className="font-bold">{appliedPromo.code}</span>
+                    </div>
+                    <button 
+                      type="button"
+                      onClick={() => setAppliedPromo(null)}
+                      className="text-xs font-medium text-red-500 hover:underline"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ) : (
+                  <div>
+                    <label className="mb-2 block text-xs font-medium uppercase tracking-wider text-cocoa">Promo Code</label>
+                    <div className="flex gap-2">
+                      <input 
+                        value={promoCodeInput}
+                        onChange={(e) => setPromoCodeInput(e.target.value.toUpperCase())}
+                        placeholder="e.g. INFLUENCER20"
+                        className="flex-1 rounded-xl border border-border bg-card px-3 py-2 text-sm outline-none focus:border-blush"
+                      />
+                      <button 
+                        type="button" 
+                        onClick={handleApplyPromo}
+                        disabled={isApplyingPromo || !promoCodeInput.trim()}
+                        className="rounded-xl bg-cocoa px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-blush disabled:opacity-50"
+                      >
+                        {isApplyingPromo ? "..." : "Apply"}
+                      </button>
+                    </div>
+                    {promoError && <p className="mt-2 text-xs text-red-500">{promoError}</p>}
+                  </div>
+                )}
+              </div>
               
               <dl className="space-y-2 border-t border-border pt-4 text-sm">
                 <div className="flex justify-between"><dt className="text-muted-foreground">Subtotal</dt><dd>{formatPrice(subtotal)}</dd></div>
                 <div className="flex justify-between"><dt className="text-muted-foreground">Shipping</dt><dd>{shipping === 0 ? "Free" : formatPrice(shipping)}</dd></div>
                 
+                {promoDiscountAmount > 0 && (
+                  <div className="flex justify-between text-sage">
+                    <dt>Promo Code Discount</dt>
+                    <dd>-{formatPrice(promoDiscountAmount)}</dd>
+                  </div>
+                )}
+
                 {method === "ONLINE" && (
                   <div className="flex justify-between text-sage">
-                    <dt>Online Payment Discount (10%)</dt>
-                    <dd>-{formatPrice(discountAmount)}</dd>
+                    <dt>Online Payment (10%)</dt>
+                    <dd>-{formatPrice(onlineDiscountAmount)}</dd>
                   </div>
                 )}
 

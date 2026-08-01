@@ -34,8 +34,8 @@ function AdminProducts() {
         </Link>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-border bg-card">
-        <table className="w-full text-left text-sm">
+      <div className="overflow-x-auto rounded-xl border border-border bg-card">
+        <table className="w-full text-left text-sm min-w-[600px]">
           <thead className="bg-secondary/50 text-muted-foreground">
             <tr>
               <th className="px-6 py-4 font-medium">Product</th>
