@@ -7,23 +7,28 @@ import { supabase } from "@/lib/supabase";
 export const Route = createFileRoute("/admin/")({
   loader: async () => {
     const products = await getProducts();
-    const { data: orders } = await supabase.from("orders").select("*").order("created_at", { ascending: false }).limit(10);
-    const { count: pendingCount } = await supabase.from("orders").select("*", { count: 'exact', head: true }).eq("status", "PENDING");
+    const { data: allOrders } = await supabase.from("orders").select("*").order("created_at", { ascending: false });
+    const orders = allOrders || [];
+    const pendingCount = orders.filter(o => o.status === "PENDING").length;
     
-    return { products, orders: orders || [], pendingCount: pendingCount || 0 };
+    // Calculate total revenue from delivered/shipped/pending orders (excluding cancelled)
+    const validOrders = orders.filter(o => o.status !== "CANCELLED");
+    const totalRevenue = validOrders.reduce((sum, order) => sum + order.total_amount, 0);
+    
+    return { products, orders, pendingCount, totalRevenue, totalOrders: orders.length };
   },
   component: AdminDashboard,
 });
 
 function AdminDashboard() {
-  const { products, orders, pendingCount } = Route.useLoaderData();
+  const { products, orders, pendingCount, totalRevenue, totalOrders } = Route.useLoaderData();
   const activeProducts = products.filter((p) => p.status === "active").length;
 
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard title="Total Revenue" value={formatPrice(124500)} icon={<DollarSign className="h-5 w-5" />} trend="+14% from last month" />
-        <StatCard title="Total Orders" value="142" icon={<ShoppingBag className="h-5 w-5" />} trend="+5% from last month" />
+        <StatCard title="Total Revenue" value={formatPrice(totalRevenue)} icon={<DollarSign className="h-5 w-5" />} trend="All time" />
+        <StatCard title="Total Orders" value={totalOrders.toString()} icon={<ShoppingBag className="h-5 w-5" />} trend="All time" />
         <div className="rounded-xl border border-yellow-200 bg-yellow-50 p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <p className="text-sm font-medium text-yellow-800">Pending Orders</p>

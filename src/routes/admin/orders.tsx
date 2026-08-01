@@ -112,14 +112,16 @@ function AdminOrdersPage() {
                   </select>
                 </td>
               </tr>
-                  <td colSpan={6} className="px-6 py-8 text-center text-muted-foreground">
-                    No orders found.
-                  </td>
-                </tr>
-              )}
+            ))}
+            {orders.length === 0 && (
+              <tr>
+                <td colSpan={6} className="px-6 py-8 text-center text-muted-foreground">
+                  No orders found.
+                </td>
+              </tr>
+            )}
             </tbody>
           </table>
-        </div>
       </div>
     </div>
   );

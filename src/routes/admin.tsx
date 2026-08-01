@@ -24,7 +24,7 @@ function AdminLayout() {
   return (
     <div className="flex min-h-screen flex-col bg-secondary/30 md:flex-row">
       {/* Desktop Sidebar */}
-      <aside className="hidden w-64 flex-col border-r border-border bg-card md:flex">
+      <aside className="sticky top-0 hidden h-screen w-64 flex-col border-r border-border bg-card md:flex">
         <div className="flex h-16 items-center border-b border-border px-6">
           <span className="font-serif text-xl text-cocoa">Herbian Admin</span>
         </div>
