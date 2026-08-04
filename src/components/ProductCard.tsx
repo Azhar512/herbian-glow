@@ -65,11 +65,13 @@ export function ProductCard({ product }: { product: Product }) {
           <span>{product.rating}</span>
           <span>({product.reviews})</span>
         </div>
-        <div className="mt-1 flex items-center gap-2">
-          <span className="font-medium text-cocoa">{formatPrice(product.price)}</span>
+        <div className="flex items-center gap-2">
           {product.original_price && (
-            <span className="text-sm text-muted-foreground line-through">{formatPrice(product.original_price)}</span>
+            <span className="text-sm text-muted-foreground line-through">
+              {formatPrice(product.original_price)}
+            </span>
           )}
+          <span className="font-medium text-cocoa">{formatPrice(product.price)}</span>
         </div>
         <button
           onClick={() => product.in_stock && product.status !== "coming_soon" && add(product, 1)}

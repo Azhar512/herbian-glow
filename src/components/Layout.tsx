@@ -3,8 +3,11 @@ import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { CartDrawer } from "./CartDrawer";
 import { MessageCircle } from "lucide-react";
+import { Route as RootRoute } from "@/routes/__root";
 
 export function Layout({ children }: { children: ReactNode }) {
+  const { whatsapp } = RootRoute.useLoaderData();
+
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <Header />
@@ -12,7 +15,7 @@ export function Layout({ children }: { children: ReactNode }) {
       <Footer />
       <CartDrawer />
       <a
-        href="https://wa.me/923164782073"
+        href={`https://wa.me/${whatsapp}`}
         target="_blank"
         rel="noreferrer"
         className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition-transform hover:scale-110"

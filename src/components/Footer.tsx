@@ -1,7 +1,10 @@
 import { Link } from "@tanstack/react-router";
-import { Facebook, Instagram, Youtube, Music2 } from "lucide-react";
+import { Facebook, Instagram, Twitter, Music2 } from "lucide-react";
+import { Route as RootRoute } from "@/routes/__root";
 
 export function Footer() {
+  const { whatsapp } = RootRoute.useLoaderData();
+
   return (
     <footer className="mt-24 border-t border-border bg-cream">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-16 sm:px-6 md:grid-cols-4">
@@ -27,7 +30,7 @@ export function Footer() {
           <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-cocoa">Customer Care</h4>
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li><Link to="/contact" className="hover:text-blush">Contact Us</Link></li>
-            <li><a href="https://wa.me/923164782073" className="hover:text-blush" target="_blank" rel="noreferrer">WhatsApp: +92 316 4782073</a></li>
+            <li><a href={`https://wa.me/${whatsapp}`} className="hover:text-blush" target="_blank" rel="noreferrer">WhatsApp: +{whatsapp}</a></li>
             <li><Link to="/shop" className="hover:text-blush">Shop All</Link></li>
             <li><Link to="/login" className="hover:text-blush">My Account</Link></li>
           </ul>

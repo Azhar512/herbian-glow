@@ -101,6 +101,14 @@ function ProductPage() {
   const wished = wishlist.includes(product.id);
   const related = products.filter((p: Product) => p.id !== product.id && p.category === product.category).slice(0, 4);
 
+  const [activeImage, setActiveImage] = useState(product.image);
+  
+  useEffect(() => {
+    setActiveImage(product.image);
+  }, [product.image]);
+
+  const allImages = [product.image, product.image2, product.image3].filter(Boolean);
+
   return (
     <Layout>
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
@@ -111,20 +119,26 @@ function ProductPage() {
         <div className="grid gap-10 md:grid-cols-2">
           <div className="relative">
             <div className="overflow-hidden rounded-3xl bg-secondary">
-              <img src={product.image} alt={product.name} className="aspect-square w-full object-cover" />
+              <img src={activeImage} alt={product.name} className="aspect-square w-full object-cover" />
             </div>
             {product.status === "coming_soon" && (
               <span className="absolute left-4 top-4 rounded-full bg-yellow-600/90 px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm">
                 Coming Soon
               </span>
             )}
-            <div className="mt-4 grid grid-cols-4 gap-3">
-              {[product.image, product.image, product.image, product.image].map((img, i) => (
-                <button key={i} className="aspect-square overflow-hidden rounded-xl border-2 border-transparent bg-secondary hover:border-blush">
-                  <img src={img} alt="" className="h-full w-full object-cover" />
-                </button>
-              ))}
-            </div>
+            {allImages.length > 1 && (
+              <div className="mt-4 grid grid-cols-4 gap-3">
+                {allImages.map((img, i) => (
+                  <button 
+                    key={i} 
+                    onClick={() => setActiveImage(img as string)}
+                    className={`aspect-square overflow-hidden rounded-xl border-2 bg-secondary ${activeImage === img ? 'border-blush' : 'border-transparent hover:border-blush/50'}`}
+                  >
+                    <img src={img as string} alt="" className="h-full w-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           <div>

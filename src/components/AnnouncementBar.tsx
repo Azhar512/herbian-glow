@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
-const messages = [
-  "Free shipping on all prepaid orders",
-  "Spend Rs. 5,000+ and get a free gift",
-  "WhatsApp us at +92 300 000 0000",
-];
+import { Route as RootRoute } from "@/routes/__root";
 
 export function AnnouncementBar() {
+  const { whatsapp } = RootRoute.useLoaderData();
+  const messages = [
+    "Free shipping on all prepaid orders",
+    "Spend Rs. 5,000+ and get a free gift",
+    `WhatsApp us at +${whatsapp}`,
+  ];
   const [i, setI] = useState(0);
   useEffect(() => {
     const t = setInterval(() => setI((v) => (v + 1) % messages.length), 3500);

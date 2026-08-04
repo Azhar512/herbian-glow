@@ -1,15 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Instagram, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
+import { Facebook, Instagram, Mail, MessageCircle, MapPin, Twitter } from "lucide-react";
 import { Layout } from "@/components/Layout";
+import { Route as RootRoute } from "@/routes/__root";
 import { getProducts, type Product } from "@/lib/products";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact — Herbian Glow" },
-      { name: "description", content: "Get in touch with Herbian Glow — we'd love to hear from you." },
-    ],
+      { title: "Contact Us — Herbian Glow" },
+      { name: "description", content: "Get in touch with the Herbian Glow team for questions, support, and glowing advice." }
+    ]
   }),
   loader: async () => {
     const products = await getProducts();
@@ -36,7 +37,7 @@ function ContactPage() {
     }
     text += `\nMessage:\n${message}`;
     
-    const url = `https://wa.me/923164782073?text=${encodeURIComponent(text)}`;
+    const url = `https://wa.me/${whatsapp}?text=${encodeURIComponent(text)}`;
     window.open(url, '_blank');
     setSent(true);
   };
@@ -84,8 +85,8 @@ function ContactPage() {
 
           <div className="space-y-5">
             <InfoRow icon={MapPin} title="Visit us" text="24 Rose Lane, Gulberg III, Lahore, Pakistan" />
-            <InfoRow icon={Phone} title="Call" text="+92 316 4782073" />
-            <InfoRow icon={MessageCircle} title="WhatsApp" text="Chat with us anytime" href="https://wa.me/923164782073" />
+            <InfoRow icon={Phone} title="Call" text={`+${whatsapp}`} />
+            <InfoRow icon={MessageCircle} title="WhatsApp" text="Chat with us anytime" href={`https://wa.me/${whatsapp}`} />
             <InfoRow icon={Mail} title="Email" text="hello@herbianglow.com" href="mailto:hello@herbianglow.com" />
             <InfoRow icon={Instagram} title="Instagram" text="@herbianglow" href="https://instagram.com" />
             <div className="aspect-[16/10] w-full overflow-hidden rounded-2xl bg-secondary">

@@ -72,7 +72,8 @@ function AdminOrdersPage() {
                 <td className="px-6 py-4">
                   <p className="font-medium">{order.customer_name}</p>
                   <p className="text-muted-foreground">{order.customer_phone}</p>
-                  <p className="text-muted-foreground">{order.customer_city}</p>
+                  <p className="text-muted-foreground text-xs">{order.customer_address}</p>
+                  <p className="text-muted-foreground text-xs">{order.customer_city}</p>
                 </td>
                 <td className="px-6 py-4">
                   <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${order.payment_method === 'ONLINE' ? 'bg-sage/20 text-sage' : 'bg-blush/20 text-blush'}`}>
